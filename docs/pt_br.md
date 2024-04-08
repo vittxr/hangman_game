@@ -1,0 +1,2 @@
+1. O atributo `word` é privado, não disponibilizando forma alguma de acessá-lo fora da classe.
+2. é preciso saber a quantidade de letras do atributo `word`, então é preciso armazenar seu tamanho em um atributo público.
