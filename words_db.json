@@ -1,0 +1,42 @@
+[
+    {
+        "name": "elefante",
+        "theme": "animal"
+    },
+    {
+        "name": "girafa",
+        "theme": "animal"
+    },
+    {
+        "name": "computador",
+        "theme": "tecnologia"
+    },
+    {
+        "name": "internet",
+        "theme": "tecnologia"
+    },
+    {
+        "name": "pizza",
+        "theme": "comida"
+    },
+    {
+        "name": "hamburguer",
+        "theme": "comida"
+    },
+    {
+        "name": "avião",
+        "theme": "transporte"
+    },
+    {
+        "name": "carro",
+        "theme": "transporte"
+    },
+    {
+        "name": "casa",
+        "theme": "construção"
+    },
+    {
+        "name": "escritório",
+        "theme": "construção"
+    }
+]
