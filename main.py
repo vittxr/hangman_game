@@ -19,7 +19,7 @@ class HangmanGame:
         self.game_over: bool = False
 
     def __get_random_word(self) -> Word:
-        with open("words_db.json") as file:
+        with open("words_db.json", mode="r") as file:
             words = json.load(file)
         return random.choice(words)
 
@@ -46,11 +46,8 @@ class HangmanGame:
             self.__finish_game(is_winner=True)
 
 
-class GameUI:
-    pass
-
-
-game = HangmanGame()
-print("word_length: ", game.word_length)
-# game.__get_random_word()
-# print(game.__word)
+class GameUI(HangmanGame):
+    def __init__(
+        self,
+    ):
+        super().__init__()
