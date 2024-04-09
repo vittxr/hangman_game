@@ -23,15 +23,31 @@ class HangmanGame:
             words = json.load(file)
         return random.choice(words)
 
+    def __finish_game(self, is_winner: bool) -> None:
+        pass
+
     # TODO: add decorator to check if letter is string.
-    def guess(self, letter: str):
+    def guess_letter(self, letter: str) -> None:
         self.letters.append(letter)
+
         if letter in self.__word:
-            return self.guessed_letters.append(letter)
+            self.guessed_letters.append(letter)
+            if self.word_length == len(self.guessed_letters):
+                self.__finish_game(is_winner=True)
         else:
             self.guesses += 1
             if self.guesses == self.max_guesses:
                 self.game_over = True
+                self.__finish_game(is_winner=False)
+
+    def guess_word(self, word: str) -> None:
+        self.guesses += 1
+        if word == self.__word:
+            self.__finish_game(is_winner=True)
+
+
+class GameUI:
+    pass
 
 
 game = HangmanGame()
