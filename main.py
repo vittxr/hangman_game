@@ -41,6 +41,9 @@ class HangmanGame:
 
     # TODO: add decorator to check if letter is string.
     def guess_letter(self, letter: str) -> None:
+        if len(letter) > 1:
+            raise ValueError("Você deve inserir apenas um caractere")
+
         self.letters.append(letter)
 
         if letter in self.__word.get("name"):
@@ -83,17 +86,20 @@ class GameUI:
             print("[2] - Adivinhar palavra")
             option = input()
 
-            match option:
-                case "1":
-                    print("Digite a letra: ")
-                    char = input()
-                    game.guess_letter(char)
-                case "2":
-                    print("Digite a palavra")
-                    word = input()
-                    game.guess_word(word)
-                case _:
-                    print("Opção inválida!")
+            try:
+                match option:
+                    case "1":
+                        print("Digite a letra: ")
+                        char = input()
+                        game.guess_letter(char)
+                    case "2":
+                        print("Digite a palavra")
+                        word = input()
+                        game.guess_word(word)
+                    case _:
+                        print("Opção inválida!")
+            except Exception as e:
+                print(e)
 
         if game.is_player_victorious:
             win_count = 1
@@ -111,7 +117,7 @@ class GameUI:
         os.system("cls")
         print(f"JOGO FINALIZADO, {player_name} \n")
         print(game.endgame_message)
-        print("Status do jogados: ")
+        print("Status do jogador: ")
         print("Número de vitórias: ", players_scores.get(player_name).get("win_count"))
         print(
             "Número de derrotas: ", players_scores.get(player_name).get("loses_count")
