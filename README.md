@@ -1,6 +1,6 @@
 # Python CLI Hangame
 
-An OOP project for university.
+An OOP project for UTP university.
 
 The project has the following functionalities as required by the project requirements:
 
