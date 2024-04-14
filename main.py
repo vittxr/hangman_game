@@ -17,7 +17,7 @@ class HangmanGame:
         self.word_length = len(self.__word.get("name"))
         self.masked_word = ["_"] * self.word_length
         self.guesses: int = 0
-        self.max_guesses: int = 7
+        self.max_guesses: int = 6
         self.guessed_letters: list[str] = []
         self.letters: list[str] = []
         self.game_over: bool = False
@@ -30,13 +30,13 @@ class HangmanGame:
         return random.choice(words)
 
     def __finish_game(self, is_winner: bool) -> None:
-        self.is_player_victorious = True
+        self.is_player_victorious = is_winner
         self.game_over = True
         if is_winner:
             self.endgame_message = "Parabéns! Você acertou a palavra"
         else:
             self.endgame_message = (
-                f"Infelizmente você errou. A palavra era {self.__word.get('name')}"
+                f"Infelizmente você errou. A palavra era '{self.__word.get('name')}'"
             )
 
     # TODO: add decorator to check if letter is string.
@@ -60,71 +60,123 @@ class HangmanGame:
 
     def guess_word(self, word: str) -> None:
         self.guesses += 1
-        if word == self.__word:
+        if self.guesses == self.max_guesses:
+            return self.__finish_game(is_winner=False)
+
+        if word == self.__word.get("name"):
             self.__finish_game(is_winner=True)
 
 
-# TODO: All text should be stored in a file called text.py
 class GameUI:
     def __init__(self):
         self.start()
 
     def start(self) -> None:
-        game = HangmanGame()
-        with open("./db/players_scores.json", mode="r") as file:
-            players_scores = json.load(file)
+        opt = None
+        while opt != "3":
+            print("\n[1] Jogar")
+            print("[2] Consultar tabela de pontuações")
+            print("[3] Sair")
 
-        player_name = input("Digite o nome do jogador: ")
+            opt = input()
 
-        while not game.game_over:
-            print(f"TEMA - {game.theme}")
-            print(hangman_sprites[game.guesses])
+            match opt:
+                case "1":
+                    game = HangmanGame()
 
-            print(" ".join(game.masked_word))
+                    with open("./db/players_scores.json", mode="r") as file:
+                        players_scores = json.load(file)
 
-            print("[1] - Adivinhar letra")
-            print("[2] - Adivinhar palavra")
-            option = input()
+                    player_name = input("Digite o nome do jogador: ")
 
-            try:
-                match option:
-                    case "1":
-                        print("Digite a letra: ")
-                        char = input()
-                        game.guess_letter(char)
-                    case "2":
-                        print("Digite a palavra")
-                        word = input()
-                        game.guess_word(word)
-                    case _:
-                        print("Opção inválida!")
-            except Exception as e:
-                print(e)
+                    while not game.game_over:
+                        print(f"TEMA - {game.theme}")
+                        print(hangman_sprites[game.guesses])
 
-        if game.is_player_victorious:
-            win_count = 1
-            if players_scores.get(player_name):
-                win_count = players_scores[player_name]["win_count"] + 1
+                        print(" ".join(game.masked_word))
 
-            players_scores[player_name] = {"win_count": win_count}
-        else:
-            loses_count = 1
-            if players_scores.get(player_name):
-                win_count = players_scores[player_name]["loses_count"] + 1
+                        print("[1] - Adivinhar letra")
+                        print("[2] - Adivinhar palavra")
+                        option = input()
 
-            players_scores[player_name] = {"loses_count": loses_count}
+                        try:
+                            match option:
+                                case "1":
+                                    print("Digite a letra: ")
+                                    char = input()
+                                    game.guess_letter(char)
+                                case "2":
+                                    print("Digite a palavra")
+                                    word = input()
+                                    game.guess_word(word)
+                                case _:
+                                    print("Opção inválida!")
+                        except Exception as e:
+                            print(e)
 
-        os.system("cls")
-        print(f"JOGO FINALIZADO, {player_name} \n")
-        print(game.endgame_message)
-        print("Status do jogador: ")
-        print("Número de vitórias: ", players_scores.get(player_name).get("win_count"))
-        print(
-            "Número de derrotas: ", players_scores.get(player_name).get("loses_count")
-        )
+                    if game.is_player_victorious:
+                        wins_count = 1
+                        if players_scores.get(player_name):
+                            if players_scores.get(player_name).get("wins_count"):
+                                wins_count = (
+                                    players_scores[player_name]["wins_count"] + 1
+                                )
 
-        with open("./db/players_scores") as f:
-            f.write(players_scores)
+                        players_scores[player_name] = {
+                            **players_scores.get(player_name, {}),
+                            "wins_count": wins_count,
+                        }
+                    else:
+                        loses_count = 1
+
+                        if players_scores.get(player_name):
+                            if players_scores.get(player_name).get("loses_count"):
+                                loses_count = (
+                                    players_scores[player_name]["loses_count"] + 1
+                                )
+
+                        players_scores[player_name] = {
+                            **players_scores.get(player_name, {}),
+                            "loses_count": loses_count,
+                        }
+
+                    os.system("clear")
+
+                    print(f"JOGO FINALIZADO, {player_name}")
+                    print(game.endgame_message)
+                    print("\nStatus do jogador: ")
+                    print(
+                        "\tNúmero de vitórias: ",
+                        players_scores.get(player_name).get("wins_count", 0),
+                    )
+                    print(
+                        "\tNúmero de derrotas:",
+                        players_scores.get(player_name).get("loses_count", 0),
+                    )
+
+                    with open("./db/players_scores.json", "w") as f:
+                        json.dump(players_scores, f)
+
+                case "2":
+                    with open("./db/players_scores.json", mode="r") as file:
+                        players_scores = json.load(file)
+                        sorted_players = sorted(
+                            players_scores.items(),
+                            key=lambda x: x[1].get(
+                                "wins_count", x[1].get("loses_count", 0)
+                            ),
+                            reverse=True,
+                        )
+
+                        for player, stats in sorted_players:
+                            print(
+                                f"\n{player}: \n\tQtd. de vitórias: {stats.get('wins_count', 0)} \n\tQtd. de derrotas: {stats.get('loses_count', 0)}"
+                            )
+                case "3":
+                    exit()
+
+                case _:
+                    print("opção inválida")
 
 
 GameUI()
