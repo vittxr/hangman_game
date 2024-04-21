@@ -1,12 +1,9 @@
 {
     "vitor": {
         "loses_count": 1,
-        "wins_count": 8
+        "wins_count": 9
     },
     "vitor2": {
         "loses_count": 2
-    },
-    "vior": {
-        "wins_count": 1
     }
 }
