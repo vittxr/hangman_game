@@ -39,7 +39,6 @@ class HangmanGame:
                 f"Infelizmente você errou. A palavra era '{self.__word.get('name')}'"
             )
 
-    # TODO: add decorator to check if letter is string.
     def guess_letter(self, letter: str) -> None:
         if len(letter) > 1:
             raise ValueError("Você deve inserir apenas um caractere")
@@ -47,10 +46,12 @@ class HangmanGame:
         self.letters.append(letter)
 
         if letter in self.__word.get("name"):
-            letter_idx = self.__word.get("name").index(letter)
-            self.masked_word[letter_idx] = letter
+            for letter_idx, _letter in enumerate(self.__word.get("name")):
+                if _letter == letter:
+                    print("letter_idx", letter_idx)
+                    self.masked_word[letter_idx] = _letter
+                    self.guessed_letters.append(_letter)
 
-            self.guessed_letters.append(letter)
             if self.word_length == len(self.guessed_letters):
                 self.__finish_game(is_winner=True)
         else:
@@ -59,12 +60,12 @@ class HangmanGame:
                 self.__finish_game(is_winner=False)
 
     def guess_word(self, word: str) -> None:
+        if word.rstrip() == self.__word.get("name"):
+            return self.__finish_game(is_winner=True)
+
         self.guesses += 1
         if self.guesses == self.max_guesses:
             return self.__finish_game(is_winner=False)
-
-        if word == self.__word.get("name"):
-            self.__finish_game(is_winner=True)
 
 
 class GameUI:

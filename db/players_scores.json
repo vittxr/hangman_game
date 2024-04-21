@@ -1,1 +1,12 @@
-{"vitor": {"loses_count": 1}, "vitor2": {"loses_count": 2}}
+{
+    "vitor": {
+        "loses_count": 1,
+        "wins_count": 8
+    },
+    "vitor2": {
+        "loses_count": 2
+    },
+    "vior": {
+        "wins_count": 1
+    }
+}
